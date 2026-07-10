@@ -78,17 +78,19 @@ model Website {
   recorderEnabled Boolean @default(false) @map("recorder_enabled")
   replayConfig    Json?   @map("replay_config")
 
-  user                User?               @relation("user", fields: [userId], references: [id])
-  createUser          User?               @relation("createUser", fields: [createdBy], references: [id])
-  team                Team?               @relation(fields: [teamId], references: [id])
-  eventData           EventData[]
-  reports             Report[]
-  revenue             Revenue[]
-  segments            Segment[]
-  sessionData         SessionData[]
-  sessionReplays      SessionReplay[]
-  sessionReplaysSaved SessionReplaySaved[]
-  heatmapEvents       HeatmapEvent[]
+  user                 User?                 @relation("user", fields: [userId], references: [id])
+  createUser           User?                 @relation("createUser", fields: [createdBy], references: [id])
+  team                 Team?                 @relation(fields: [teamId], references: [id])
+  eventData            EventData[]
+  reports              Report[]
+  revenue              Revenue[]
+  segments             Segment[]
+  sessionData          SessionData[]
+  sessionReplays       SessionReplay[]
+  sessionReplaysSaved  SessionReplaySaved[]
+  heatmapEvents        HeatmapEvent[]
+  commerceIntegrations CommerceIntegration[]
+  commerceEvents       CommerceEvent[]
 
   @@index([userId])
   @@index([teamId])
@@ -208,7 +210,7 @@ model Team {
   members  TeamUser[]
   links    Link[]
   pixels   Pixel[]
-  boards    Board[]
+  boards   Board[]
 
   @@index([accessCode])
   @@map("team")
@@ -267,23 +269,83 @@ model Segment {
 }
 
 model Revenue {
-  id        String    @id() @map("revenue_id") @db.Uuid
-  websiteId String    @map("website_id") @db.Uuid
-  sessionId String    @map("session_id") @db.Uuid
-  eventId   String    @map("event_id") @db.Uuid
-  eventName String    @map("event_name") @db.VarChar(50)
-  currency  String    @db.VarChar(10)
-  revenue   Decimal?  @db.Decimal(19, 4)
-  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  id         String    @id() @map("revenue_id") @db.Uuid
+  websiteId  String    @map("website_id") @db.Uuid
+  sessionId  String?   @map("session_id") @db.Uuid
+  eventId    String?   @map("event_id") @db.Uuid
+  eventName  String    @map("event_name") @db.VarChar(50)
+  provider   String    @default("web") @db.VarChar(50)
+  providerId String?   @map("provider_id") @db.VarChar(255)
+  currency   String    @db.VarChar(10)
+  revenue    Decimal?  @db.Decimal(19, 4)
+  createdAt  DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
 
-  website Website @relation(fields: [websiteId], references: [id])
-  session Session @relation(fields: [sessionId], references: [id])
+  website Website  @relation(fields: [websiteId], references: [id])
+  session Session? @relation(fields: [sessionId], references: [id])
 
+  @@unique([websiteId, provider, providerId])
   @@index([websiteId])
   @@index([sessionId])
   @@index([websiteId, createdAt])
   @@index([websiteId, sessionId, createdAt])
   @@map("revenue")
+}
+
+model CommerceIntegration {
+  id                String    @id() @map("integration_id") @db.Uuid
+  websiteId         String    @map("website_id") @db.Uuid
+  provider          String    @db.VarChar(50)
+  status            String    @default("active") @db.VarChar(50)
+  credentials       String?   @db.Text
+  webhookSecret     String?   @map("webhook_secret") @db.VarChar(500)
+  providerAccountId String?   @map("provider_account_id") @db.VarChar(255)
+  lastEventAt       DateTime? @map("last_event_at") @db.Timestamptz(6)
+  createdAt         DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime? @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt         DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  website        Website         @relation(fields: [websiteId], references: [id])
+  commerceEvents CommerceEvent[]
+
+  @@unique([websiteId, provider])
+  @@index([websiteId])
+  @@map("commerce_integration")
+}
+
+model CommerceEvent {
+  id                     String    @id() @map("commerce_event_id") @db.Uuid
+  websiteId              String    @map("website_id") @db.Uuid
+  integrationId          String?   @map("integration_id") @db.Uuid
+  provider               String    @db.VarChar(50)
+  eventType              String    @map("event_type") @db.VarChar(50)
+  providerEventId        String    @map("provider_event_id") @db.VarChar(255)
+  providerTransactionId  String    @map("provider_transaction_id") @db.VarChar(255)
+  providerCustomerId     String?   @map("provider_customer_id") @db.VarChar(255)
+  providerSubscriptionId String?   @map("provider_subscription_id") @db.VarChar(255)
+  customerEmailHash      String?   @map("customer_email_hash") @db.VarChar(255)
+  productId              String?   @map("product_id") @db.VarChar(255)
+  productName            String?   @map("product_name") @db.VarChar(500)
+  quantity               Int?      @db.Integer
+  amount                 Decimal   @db.Decimal(19, 4)
+  currency               String    @db.VarChar(10)
+  attribution            String    @default("none") @db.VarChar(50)
+  sessionId              String?   @map("session_id") @db.Uuid
+  visitId                String?   @map("visit_id") @db.Uuid
+  revenueId              String?   @map("revenue_id") @db.Uuid
+  metadata               Json?
+  occurredAt             DateTime  @map("occurred_at") @db.Timestamptz(6)
+  createdAt              DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  website     Website              @relation(fields: [websiteId], references: [id])
+  integration CommerceIntegration? @relation(fields: [integrationId], references: [id])
+
+  @@unique([websiteId, provider, providerEventId])
+  @@index([websiteId])
+  @@index([websiteId, createdAt])
+  @@index([websiteId, provider, createdAt])
+  @@index([websiteId, providerCustomerId])
+  @@index([sessionId])
+  @@map("commerce_event")
 }
 
 model Link {
@@ -346,6 +408,7 @@ model Board {
   @@index([createdAt])
   @@map("board")
 }
+
 model Share {
   id         String    @id() @map("share_id") @db.Uuid
   entityId   String    @map("entity_id") @db.Uuid
@@ -402,22 +465,22 @@ model SessionReplaySaved {
 }
 
 model HeatmapEvent {
-  id               String   @id() @map("heatmap_event_id") @db.Uuid
-  websiteId        String   @map("website_id") @db.Uuid
-  sessionId        String   @map("session_id") @db.Uuid
-  visitId          String   @map("visit_id") @db.Uuid
-  urlPath          String   @map("url_path") @db.VarChar(500)
-  eventType        Int      @map("event_type") @db.Integer
-  x                Int?     @db.Integer
-  y                Int?     @db.Integer
-  pageX            Int?     @map("page_x") @db.Integer
-  pageY            Int?     @map("page_y") @db.Integer
-  pageW            Int?     @map("page_w") @db.Integer
-  viewportW        Int?     @map("viewport_w") @db.Integer
-  viewportH        Int?     @map("viewport_h") @db.Integer
-  pageH            Int?     @map("page_h") @db.Integer
-  scrollPct        Int?     @map("scroll_pct") @db.Integer
-  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  id        String   @id() @map("heatmap_event_id") @db.Uuid
+  websiteId String   @map("website_id") @db.Uuid
+  sessionId String   @map("session_id") @db.Uuid
+  visitId   String   @map("visit_id") @db.Uuid
+  urlPath   String   @map("url_path") @db.VarChar(500)
+  eventType Int      @map("event_type") @db.Integer
+  x         Int?     @db.Integer
+  y         Int?     @db.Integer
+  pageX     Int?     @map("page_x") @db.Integer
+  pageY     Int?     @map("page_y") @db.Integer
+  pageW     Int?     @map("page_w") @db.Integer
+  viewportW Int?     @map("viewport_w") @db.Integer
+  viewportH Int?     @map("viewport_h") @db.Integer
+  pageH     Int?     @map("page_h") @db.Integer
+  scrollPct Int?     @map("scroll_pct") @db.Integer
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   website Website @relation(fields: [websiteId], references: [id])
 

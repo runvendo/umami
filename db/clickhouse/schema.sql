@@ -279,6 +279,8 @@ CREATE TABLE umami.website_revenue
     session_id UUID,
     event_id UUID,
     event_name String,
+    provider LowCardinality(String) DEFAULT 'web',
+    provider_id String DEFAULT '',
     currency String,
     revenue DECIMAL(18,4),
     created_at DateTime('UTC')
