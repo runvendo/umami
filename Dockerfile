@@ -10,6 +10,7 @@ FROM node:${NODE_IMAGE_VERSION} AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
+COPY vendor ./vendor
 RUN npm install -g pnpm
 
 RUN printf 'strictDepBuilds: false\n' > pnpm-workspace.yaml
@@ -59,6 +60,7 @@ RUN pnpm add npm-run-all dotenv chalk semver \
     @prisma/adapter-pg@${PRISMA_VERSION}
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.vendo ./.vendo
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/scripts ./scripts

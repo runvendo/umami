@@ -1,0 +1,174 @@
+{
+  "format": "vendo/tools@1",
+  "tools": [
+    {
+      "name": "list_umami_websites",
+      "description": "List the Umami websites visible to the signed-in user, including each website id, name, and domain. Call this before site-specific analytics tools.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "risk": "read",
+      "binding": {
+        "kind": "route",
+        "method": "GET",
+        "path": "/api/me/websites",
+        "argsIn": "query"
+      }
+    },
+    {
+      "name": "get_umami_website_stats",
+      "description": "Get pageview and session totals for one Umami website over a UTC date range.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "websiteId": {
+            "type": "string",
+            "description": "Umami website UUID from list_umami_websites."
+          },
+          "startAt": {
+            "type": "integer",
+            "description": "UTC start time in Unix milliseconds."
+          },
+          "endAt": {
+            "type": "integer",
+            "description": "UTC end time in Unix milliseconds."
+          },
+          "timezone": {
+            "type": "string",
+            "default": "UTC"
+          }
+        },
+        "required": ["websiteId", "startAt", "endAt"],
+        "additionalProperties": false
+      },
+      "risk": "read",
+      "binding": {
+        "kind": "route",
+        "method": "GET",
+        "path": "/api/websites/{websiteId}/stats",
+        "argsIn": "query"
+      }
+    },
+    {
+      "name": "get_umami_website_metrics",
+      "description": "Rank pages, custom events, referrers, titles, or hostnames for one Umami website over a UTC date range.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "websiteId": {
+            "type": "string",
+            "description": "Umami website UUID from list_umami_websites."
+          },
+          "type": {
+            "type": "string",
+            "enum": ["path", "event", "referrer", "title", "hostname"]
+          },
+          "startAt": {
+            "type": "integer",
+            "description": "UTC start time in Unix milliseconds."
+          },
+          "endAt": {
+            "type": "integer",
+            "description": "UTC end time in Unix milliseconds."
+          },
+          "timezone": {
+            "type": "string",
+            "default": "UTC"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "required": ["websiteId", "type", "startAt", "endAt"],
+        "additionalProperties": false
+      },
+      "risk": "read",
+      "binding": {
+        "kind": "route",
+        "method": "GET",
+        "path": "/api/websites/{websiteId}/metrics",
+        "argsIn": "query"
+      }
+    },
+    {
+      "name": "get_umami_revenue_report",
+      "description": "Get Umami revenue totals, comparison, chart, and acquisition breakdowns for one website.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "websiteId": {
+                "type": "string",
+                "description": "Umami website UUID from list_umami_websites."
+              },
+              "filters": {
+                "type": "object",
+                "additionalProperties": true,
+                "default": {}
+              },
+              "type": {
+                "type": "string",
+                "const": "revenue"
+              },
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "startDate": {
+                    "type": "string",
+                    "description": "ISO-8601 UTC start date."
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "description": "ISO-8601 UTC end date."
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": ["day", "hour", "month"],
+                    "default": "day"
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "default": "UTC"
+                  },
+                  "currency": {
+                    "type": "string",
+                    "default": "USD"
+                  },
+                  "compare": {
+                    "type": "string",
+                    "enum": ["prev", "yoy"],
+                    "default": "prev"
+                  }
+                },
+                "required": ["startDate", "endDate", "currency"],
+                "additionalProperties": false
+              }
+            },
+            "required": ["websiteId", "filters", "type", "parameters"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["body"],
+        "additionalProperties": false
+      },
+      "risk": "read",
+      "binding": {
+        "kind": "openapi",
+        "operationId": "getUmamiRevenueReport",
+        "method": "POST",
+        "path": "/api/reports/revenue"
+      },
+      "formats": {
+        "value": "cents",
+        "total": "cents"
+      }
+    }
+  ]
+}
