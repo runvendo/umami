@@ -15,7 +15,7 @@ RUN npm install -g pnpm
 
 RUN printf 'strictDepBuilds: false\n' > pnpm-workspace.yaml
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm --config.minimumReleaseAge=0 install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM node:${NODE_IMAGE_VERSION} AS builder
@@ -54,7 +54,7 @@ RUN echo {} > package.json
 RUN printf "allowBuilds:\n  '@prisma/engines': true\n  prisma: false\nverifyDepsBeforeRun: false\n" > pnpm-workspace.yaml
 
 # Script dependencies
-RUN pnpm add npm-run-all dotenv chalk semver \
+RUN pnpm --config.minimumReleaseAge=0 add npm-run-all dotenv chalk semver \
     prisma@${PRISMA_VERSION} \
     @prisma/client@${PRISMA_VERSION} \
     @prisma/adapter-pg@${PRISMA_VERSION}
