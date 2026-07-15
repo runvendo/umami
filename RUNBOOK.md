@@ -48,7 +48,7 @@ Umami owns authentication. Its login API returns an encrypted bearer stored by t
 
 ## Vendo packages
 
-The public npm packages were not usable for this integration. The `vendor/` tarballs were built from Vendo commit `1b75e032af6c9fd98feb4c0a706eb57d4e9dc353` with `corpus/harness`'s `createLocalVendoInjector`; `package.json` and `pnpm-lock.yaml` resolve every `@vendoai/*` package to those tarballs. The installed umbrella's real `vendo init . --yes` flow produced the `.vendo/` artifacts and extracted Umami theme.
+The public npm packages were not usable for this integration. The `vendor/` tarballs were built from Vendo commit `4bfb72495a6abad16e04298b0e188b98fc9e92a9` with `corpus/harness`'s local-package installer after PR #181 landed; `package.json` and `pnpm-lock.yaml` resolve every `@vendoai/*` package to those tarballs. The installed umbrella's real `vendo init . --yes` flow produced the `.vendo/` artifacts and extracted Umami theme.
 
 When refreshing Vendo, rebuild and inject with the same corpus harness boundary from a current Vendo `origin/main`, run a non-frozen install so the local tarball integrity values update, and rerun all verification below. Do not replace the tarballs with registry versions until the registry is known good.
 
