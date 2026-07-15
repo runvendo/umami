@@ -9,8 +9,10 @@ This fork adds Vendo to upstream Umami 3.2.0 as a customer-style integration. It
 - App service: `umami` (`ddccf330-a76a-43cb-ab7d-cf1ab0b1f265`)
 - Postgres service: `Postgres` (`4f00bce4-c2a0-4a65-9e76-095638bdac19`)
 - Public URL: `https://umami-production-2721.up.railway.app`
+- Current app source: `ffb9fe16fcc0d1c34061c7e9a717a8c2a0cd9991`
+- Current Railway deployment: `fa8745c6-7c61-42b0-b71d-be4e9e2a0e94`
 
-Railway deploys the Dockerfile from `vendo-mcp`. A push to that branch triggers a redeploy; an operator can also run `railway service redeploy --service umami` from this checkout.
+Railway deploys the Dockerfile from `vendo-mcp`. To upload the current clean checkout, run `railway up --project 4ffc3f86-4f51-4450-8080-2c1f4442605c --environment 8e854206-2369-47ba-bcec-c123ddc70053 --service ddccf330-a76a-43cb-ab7d-cf1ab0b1f265 --detach`. `railway redeploy` only rebuilds the source already attached to the latest Railway release; it does not upload newer local commits.
 
 ## Environment variables
 
@@ -79,3 +81,11 @@ curl --fail https://umami-production-2721.up.railway.app/api/heartbeat
 curl --fail https://umami-production-2721.up.railway.app/.well-known/oauth-protected-resource/api/vendo/mcp
 curl --fail https://umami-production-2721.up.railway.app/.well-known/oauth-authorization-server/api/vendo/mcp
 ```
+
+## Production verification
+
+On 2026-07-14, Railway deployment `fa8745c6-7c61-42b0-b71d-be4e9e2a0e94` reached `SUCCESS` from app source `ffb9fe16fcc0d1c34061c7e9a717a8c2a0cd9991`.
+
+- The live MCP SDK proof completed protected-resource and authorization-server discovery, dynamic client registration, PKCE S256, the exact Umami login `returnTo`, prebuilt consent approval, authorization-code exchange, token issuance, tool discovery, and `list_umami_websites`. The tool returned the two seeded sites, Demo Blog and Demo SaaS.
+- A fresh isolated Chromium session with no existing cookies opened the authorize URL, landed on Umami login, and returned after login to the exact original authorize URL. It rendered `Allow Umami browser proof to access this product?` with `--vendo-color-accent: #2b7fff`, `--vendo-font-family: Inter, sans-serif`, and `--vendo-radius-medium: 6px`; clicking Allow completed the browser-side consent decision and redirected to the registered local callback.
+- The live heartbeat returned `{\"ok\":true}`, and both OAuth discovery documents returned successfully at the URLs above.
