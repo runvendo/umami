@@ -1,0 +1,19 @@
+{
+  "format": "vendo/policy@1",
+  "directions": ["Only expose read-only analytics through the MCP door."],
+  "rules": [
+    {
+      "match": {
+        "risk": "read"
+      },
+      "action": "run"
+    },
+    {
+      "match": {
+        "venue": "mcp"
+      },
+      "action": "block",
+      "note": "Any non-read tool accidentally added later stays closed over MCP."
+    }
+  ]
+}

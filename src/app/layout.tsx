@@ -1,9 +1,12 @@
+import type { VendoTheme } from '@vendoai/vendo';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { headers } from 'next/headers';
 import { Suspense } from 'react';
 import { getBaseUrl } from '@/lib/get-base-url';
+import theme from '../../.vendo/theme.json';
 import { Providers } from './Providers';
+import { UmamiVendoRoot } from './UmamiVendoRoot';
 import '@umami/react-zen/styles.full.css';
 import './global.css';
 
@@ -38,7 +41,9 @@ export default function ({ children }) {
       </head>
       <body>
         <Suspense>
-          <Providers>{children}</Providers>
+          <Providers>
+            <UmamiVendoRoot theme={theme as VendoTheme}>{children}</UmamiVendoRoot>
+          </Providers>
         </Suspense>
       </body>
     </html>

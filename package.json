@@ -44,6 +44,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "seed-data": "tsx scripts/seed-data.ts",
+    "seed:vendo-demo": "tsx scripts/seed-vendo-demo.ts",
+    "mcp:e2e": "tsx scripts/mcp-e2e.ts",
     "lint": "biome lint .",
     "format": "biome format --write .",
     "check": "biome check --write"
@@ -52,6 +54,7 @@
     ".next/cache"
   ],
   "dependencies": {
+    "@ai-sdk/anthropic": "3.0.12",
     "@clickhouse/client": "^1.20.0",
     "@date-fns/utc": "^2.1.1",
     "@dicebear/collection": "^9.4.2",
@@ -64,6 +67,9 @@
     "@svgr/cli": "^8.1.0",
     "@tanstack/react-query": "^5.101.0",
     "@umami/react-zen": "^0.245.0",
+    "@vendoai/store": "file:vendor/vendoai-store-0.3.0.tgz",
+    "@vendoai/vendo": "file:vendor/vendoai-vendo-0.3.0.tgz",
+    "ai": "6.0.28",
     "bcryptjs": "^3.0.2",
     "chalk": "^5.6.2",
     "chart.js": "^4.5.1",
@@ -121,6 +127,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@netlify/plugin-nextjs": "^5.15.11",
     "@rollup/plugin-alias": "^6.0.0",
     "@rollup/plugin-commonjs": "^29.0.3",
@@ -159,5 +166,23 @@
     "tsx": "^4.22.4",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
+  },
+  "pnpm": {
+    "overrides": {
+      "@ai-sdk/anthropic": "3.0.12",
+      "@vendoai/actions": "file:vendor/vendoai-actions-0.3.0.tgz",
+      "@vendoai/agent": "file:vendor/vendoai-agent-0.3.0.tgz",
+      "@vendoai/apps": "file:vendor/vendoai-apps-0.3.0.tgz",
+      "@vendoai/automations": "file:vendor/vendoai-automations-0.3.0.tgz",
+      "@vendoai/core": "file:vendor/vendoai-core-0.3.0.tgz",
+      "@vendoai/guard": "file:vendor/vendoai-guard-0.3.0.tgz",
+      "@vendoai/mcp": "file:vendor/vendoai-mcp-0.3.0.tgz",
+      "@vendoai/store": "file:vendor/vendoai-store-0.3.0.tgz",
+      "@vendoai/telemetry": "file:vendor/vendoai-telemetry-0.2.0.tgz",
+      "@vendoai/ui": "file:vendor/vendoai-ui-0.3.0.tgz",
+      "@vendoai/vendo": "file:vendor/vendoai-vendo-0.3.0.tgz",
+      "ai": "6.0.28",
+      "vendoai": "file:vendor/vendoai-0.3.0.tgz"
+    }
   }
 }

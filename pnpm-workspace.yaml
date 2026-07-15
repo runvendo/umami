@@ -10,3 +10,18 @@ allowBuilds:
   msw: false
   prisma: true
   sharp: false
+overrides:
+  '@ai-sdk/anthropic': 3.0.12
+  '@vendoai/actions': file:vendor/vendoai-actions-0.3.0.tgz
+  '@vendoai/agent': file:vendor/vendoai-agent-0.3.0.tgz
+  '@vendoai/apps': file:vendor/vendoai-apps-0.3.0.tgz
+  '@vendoai/automations': file:vendor/vendoai-automations-0.3.0.tgz
+  '@vendoai/core': file:vendor/vendoai-core-0.3.0.tgz
+  '@vendoai/guard': file:vendor/vendoai-guard-0.3.0.tgz
+  '@vendoai/mcp': file:vendor/vendoai-mcp-0.3.0.tgz
+  '@vendoai/store': file:vendor/vendoai-store-0.3.0.tgz
+  '@vendoai/telemetry': file:vendor/vendoai-telemetry-0.2.0.tgz
+  '@vendoai/ui': file:vendor/vendoai-ui-0.3.0.tgz
+  '@vendoai/vendo': file:vendor/vendoai-vendo-0.3.0.tgz
+  ai: 6.0.28
+  vendoai: file:vendor/vendoai-0.3.0.tgz

@@ -9,15 +9,17 @@ import {
   PasswordField,
   TextField,
 } from '@umami/react-zen';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useMessages, useUpdateQuery } from '@/components/hooks';
 import { Logo } from '@/components/svg';
 import { setClientAuthToken } from '@/lib/client';
+import { safeNextPath } from '@/lib/safe-next';
 import { setUser } from '@/store/app';
 
 export function LoginForm() {
   const { t, labels, getErrorMessage } = useMessages();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { mutateAsync, error } = useUpdateQuery('/auth/login');
 
   const handleSubmit = async (data: any) => {
@@ -25,7 +27,7 @@ export function LoginForm() {
       onSuccess: async ({ token, user }) => {
         setClientAuthToken(token);
         setUser(user);
-        router.push('/');
+        router.push(safeNextPath(searchParams.get('next')));
       },
     });
   };
