@@ -2947,14 +2947,14 @@ packages:
     engines: {node: '>=20'}
 
   '@vendoai/agent@file:vendor/vendoai-agent-0.3.0.tgz':
-    resolution: {integrity: sha512-JpDTZAd+51cZ3vUtohaH/H/m0hCoaYK/wjqY67afG+1n0ChSOKQT0mzvNWWU3kMStYMnRSK7AAeoo/0U/sGiow==, tarball: file:vendor/vendoai-agent-0.3.0.tgz}
+    resolution: {integrity: sha512-6SPEK7PF62LawJ2KeS+AQOO0breHS0AmmSLdQq9vV1u890swFaMCIsIUtztdUxzKm/cZiKFAMK2IOUiHozxnDw==, tarball: file:vendor/vendoai-agent-0.3.0.tgz}
     version: 0.3.0
     engines: {node: '>=20'}
     peerDependencies:
       ai: 6.0.28
 
   '@vendoai/apps@file:vendor/vendoai-apps-0.3.0.tgz':
-    resolution: {integrity: sha512-aRE3mC90KSb1P/gnubx1F4PMvONqcL0P5rrSiZBNtiqOcCmBLm7IIQG00cMGG06OjBDZvKQdi+5TvKi58FK01A==, tarball: file:vendor/vendoai-apps-0.3.0.tgz}
+    resolution: {integrity: sha512-DRQ66tjBSRqBQaxaIneSYypGGyoOjkA0wOO/PVUuYkkswY9d+lLaC6yxhCCaE3qqqI7CZ6HgtOXYvJw2JHtxLg==, tarball: file:vendor/vendoai-apps-0.3.0.tgz}
     version: 0.3.0
     engines: {node: '>=20'}
     peerDependencies:
@@ -2970,12 +2970,12 @@ packages:
         optional: true
 
   '@vendoai/automations@file:vendor/vendoai-automations-0.3.0.tgz':
-    resolution: {integrity: sha512-B86Osd3Z++K1vBhTUNWavFkfzJtuW6AbBxLig+QvAiBG0WyP3r4/6bsCpTR7gY39VlVsDv+A0wCQu+q66LAxOw==, tarball: file:vendor/vendoai-automations-0.3.0.tgz}
+    resolution: {integrity: sha512-EVLC97Ifpw81tmW4wm/+/GCNEsOEfGNMeE1VDZ1KsX9CuhSqOIi0ky5/8bhH50w5aX7eT/MWIleZcBFbPDcgbg==, tarball: file:vendor/vendoai-automations-0.3.0.tgz}
     version: 0.3.0
     engines: {node: '>=20'}
 
   '@vendoai/core@file:vendor/vendoai-core-0.3.0.tgz':
-    resolution: {integrity: sha512-43yZkdfG4/jk3+JbcCkl5e9+1BAXdfZ0mbAUYlRZ/WZJIlBN81EWCDC6STD3TsGS5zLiKB3QRWTfqy4Z6m/iXg==, tarball: file:vendor/vendoai-core-0.3.0.tgz}
+    resolution: {integrity: sha512-sbv4r214QqUHQ181DRY4+5x/co+Ev/PuKzw2XbI12k1owRb6b7wE6pb1poSv3uMO/I00GC7NkB8ekuVCBGjA9Q==, tarball: file:vendor/vendoai-core-0.3.0.tgz}
     version: 0.3.0
     engines: {node: '>=20'}
 
@@ -2987,12 +2987,12 @@ packages:
       ai: 6.0.28
 
   '@vendoai/mcp@file:vendor/vendoai-mcp-0.3.0.tgz':
-    resolution: {integrity: sha512-DzoBHgrGHQk2DP845ks4DHGe4A4pBHz4uUKOUYc26bHsLLbGQEPUJZaZtkXM0m4i+VDrJkRifjjcKlR09GvLzA==, tarball: file:vendor/vendoai-mcp-0.3.0.tgz}
+    resolution: {integrity: sha512-3bvfqM/Pisn/qMpr3MitGtSuMfcskbZ7I0nidHr8VD+/HuzAQ90LcrZx4coP2a0aEEni8iARSVIO7jQcaSS5Bg==, tarball: file:vendor/vendoai-mcp-0.3.0.tgz}
     version: 0.3.0
     engines: {node: '>=20'}
 
   '@vendoai/store@file:vendor/vendoai-store-0.3.0.tgz':
-    resolution: {integrity: sha512-9flZpVi0GalG9K60px/LeT+Jv8J7HDeAdO+bGcFvwPi+ujROm1j4RfJY0r8Ls+iQQ7BiCHK4EmmVbz0sBHXA+Q==, tarball: file:vendor/vendoai-store-0.3.0.tgz}
+    resolution: {integrity: sha512-3of3ZrTnrdKg6SUfTCbX216XezIt6QcKG60jMUVT2SMr2+a5xlj6gcOJh4w7ALxljvTCQlnX4AxsYkOkPtq+HQ==, tarball: file:vendor/vendoai-store-0.3.0.tgz}
     version: 0.3.0
     engines: {node: '>=20'}
 
@@ -3011,7 +3011,7 @@ packages:
       react-dom: ^18.0.0 || ^19.0.0
 
   '@vendoai/vendo@file:vendor/vendoai-vendo-0.3.0.tgz':
-    resolution: {integrity: sha512-cgmqmyF7dE9ymwhgtN4dSV1UpJ++u0qpcfoncKscOR9m2m5+W20ApOCzZ5NbNLkxxJlGQS2oIbY8IbK5cmsnUA==, tarball: file:vendor/vendoai-vendo-0.3.0.tgz}
+    resolution: {integrity: sha512-zveMoWep8glZjxioXiJ9f7jVhNdHyKaMybRcIsswc4cjx/HoRT0R4zzei63DAeKNQh1aNTPWty0fGpf627OFSg==, tarball: file:vendor/vendoai-vendo-0.3.0.tgz}
     version: 0.3.0
     engines: {node: '>=20'}
     hasBin: true
