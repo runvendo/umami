@@ -16,7 +16,13 @@ async function json<T>(response: Response, label: string): Promise<T> {
 }
 
 function decodeHtml(value: string): string {
-  return value.replaceAll('&quot;', '"').replaceAll('&#039;', "'").replaceAll('&amp;', '&');
+  return value.replaceAll('&quot;', '"').replaceAll('&#39;', "'").replaceAll('&amp;', '&');
+}
+
+function hiddenInput(html: string, name: string): string {
+  const match = html.match(new RegExp(`name="${name}" value="([^"]+)"`));
+  assert(match?.[1], `Consent page did not contain ${name}.`);
+  return decodeHtml(match[1]);
 }
 
 async function main() {
@@ -95,6 +101,10 @@ async function main() {
     bounce.status === 200 && bounceHtml.includes('Connect to Umami'),
     'Login bounce did not render.',
   );
+  assert(
+    bounceHtml.includes(JSON.stringify(authorizeUrl.toString()).slice(1, -1)),
+    'Login bounce did not preserve the exact authorization returnTo.',
+  );
 
   const username =
     process.env.UMAMI_DEMO_USERNAME ?? (origin.hostname === 'localhost' ? 'admin' : undefined);
@@ -125,25 +135,36 @@ async function main() {
   const consentResponse = await fetch(authorizeUrl, { headers: { cookie }, redirect: 'manual' });
   const consentHtml = await consentResponse.text();
   assert(
-    consentResponse.status === 200 && consentHtml.includes('Allow analytics access'),
-    'Consent page did not render.',
+    consentResponse.status === 200 &&
+      consentHtml.includes('Allow Umami MCP proof client to access this product?'),
+    'Prebuilt consent page did not render.',
   );
-  const consentMatch = consentHtml.match(/name="vendo_consent" value="([^"]+)"/);
-  assert(consentMatch?.[1], 'Consent page did not contain a signed consent value.');
-  const signedConsent = decodeHtml(consentMatch[1]);
-  const replayUrl = new URL(authorizeUrl);
-  replayUrl.searchParams.set('state', `${state}-altered`);
-  replayUrl.searchParams.set('vendo_consent', signedConsent);
-  const replay = await fetch(replayUrl, { headers: { cookie }, redirect: 'manual' });
-  assert(replay.status === 400, 'Consent proof was not bound to the exact OAuth request.');
-
-  const approvedUrl = new URL(authorizeUrl);
-  approvedUrl.searchParams.set('vendo_consent', signedConsent);
-  const approved = await fetch(approvedUrl, { headers: { cookie }, redirect: 'manual' });
+  assert(
+    consentHtml.includes('--vendo-color-accent:#2b7fff') &&
+      consentHtml.includes('--vendo-font-family:Inter, sans-serif') &&
+      consentHtml.includes('--vendo-radius-medium:6px'),
+    'Prebuilt consent page did not carry the extracted Umami theme tokens.',
+  );
+  const transaction = hiddenInput(consentHtml, 'transaction');
+  const csrfToken = hiddenInput(consentHtml, 'csrf_token');
+  const decision = new URLSearchParams({ transaction, csrf_token: csrfToken, decision: 'approve' });
+  const approved = await fetch(authorizeUrl, {
+    method: 'POST',
+    headers: { cookie, 'content-type': 'application/x-www-form-urlencoded' },
+    body: decision,
+    redirect: 'manual',
+  });
   assert(
     approved.status >= 300 && approved.status < 400,
     `Consent did not redirect (${approved.status}).`,
   );
+  const replay = await fetch(authorizeUrl, {
+    method: 'POST',
+    headers: { cookie, 'content-type': 'application/x-www-form-urlencoded' },
+    body: decision,
+    redirect: 'manual',
+  });
+  assert(replay.status === 400, 'Consent interaction replay was not rejected.');
   const callback = new URL(approved.headers.get('location') ?? '');
   assert(callback.searchParams.get('state') === state, 'OAuth state did not round-trip.');
   const code = callback.searchParams.get('code');
@@ -188,7 +209,9 @@ async function main() {
           dcr: true,
           pkceS256: true,
           loginUser: { id: login.user.id, authenticated: true },
-          consent: true,
+          exactLoginReturnTo: true,
+          prebuiltConsent: true,
+          extractedThemeTokens: true,
           consentReplayRejected: true,
           authorizationCode: true,
           accessToken: true,

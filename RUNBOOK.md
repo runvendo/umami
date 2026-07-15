@@ -44,11 +44,11 @@ pnpm build
 pnpm start
 ```
 
-Umami owns authentication. Its login API returns an encrypted bearer stored by the browser under `umami.auth`; the OAuth adapter validates that bearer with Umami's existing `checkAuth`, bridges it into a short-lived HttpOnly cookie, obtains explicit consent, and maps the grant back to the current Umami user. Vendo uses the same Postgres database through its supported store adapter, in Vendo-owned tables, so OAuth grants survive app restarts.
+Umami owns authentication. Its login API returns an encrypted bearer stored by the browser under `umami.auth`; the OAuth adapter validates that bearer with Umami's existing `checkAuth`, bridges it into a short-lived HttpOnly cookie, and returns the current Umami subject from `HostOAuthAdapter.session`. The door owns the consent page and decision flow, including CSRF protection, single-use replay protection, and the standard OAuth redirect. The prebuilt page receives Umami's extracted theme through `--vendo-*` CSS variables. Vendo uses the same Postgres database through its supported store adapter, in Vendo-owned tables, so OAuth grants survive app restarts.
 
 ## Vendo packages
 
-The public npm packages were not usable for this integration. The `vendor/` tarballs were built from Vendo commit `4bfb72495a6abad16e04298b0e188b98fc9e92a9` with `corpus/harness`'s local-package installer after PR #181 landed; `package.json` and `pnpm-lock.yaml` resolve every `@vendoai/*` package to those tarballs. The installed umbrella's real `vendo init . --yes` flow produced the `.vendo/` artifacts and extracted Umami theme.
+The public npm packages were not usable for this integration. The `vendor/` tarballs were built from Vendo commit `4bfb72495a6abad16e04298b0e188b98fc9e92a9` with `corpus/harness`'s `installLocalVendoPackages` after PR #181 landed; `package.json` and `pnpm-lock.yaml` resolve every `@vendoai/*` package to those tarballs. The installed umbrella's real `vendo init . --yes` flow produced the `.vendo/` artifacts and extracted Umami theme.
 
 When refreshing Vendo, rebuild and inject with the same corpus harness boundary from a current Vendo `origin/main`, run a non-frozen install so the local tarball integrity values update, and rerun all verification below. Do not replace the tarballs with registry versions until the registry is known good.
 
@@ -64,7 +64,7 @@ DEMO_PASSWORD="$(railway variable list --service umami --json | jq -r '.DEMO_PAS
 pnpm seed:vendo-demo
 ```
 
-The MCP proof client uses the real MCP SDK and runs discovery, dynamic client registration, PKCE S256, Umami login, consent, authorization-code exchange, and an authenticated analytics tool call:
+The MCP proof client uses the real MCP SDK and runs discovery, dynamic client registration, PKCE S256, Umami's exact login return bounce, the prebuilt themed consent page, authorization-code exchange, consent-replay rejection, and an authenticated analytics tool call:
 
 ```bash
 UMAMI_DEMO_USERNAME="$(railway variable list --service umami --json | jq -r '.DEMO_USERNAME')" \
