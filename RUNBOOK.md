@@ -28,13 +28,16 @@ Required on the Railway `umami` service:
 
 `ANTHROPIC_API_KEY` is optional for Vendo's generative app/chat features. The checked-in analytics MCP tools and OAuth flow do not require it.
 
-Secret values live only in Railway variables. To retrieve the demo login as an authorized operator:
+The demo login (`DEMO_USERNAME` / `DEMO_PASSWORD`) is an intentionally public,
+non-secret demo credential: `admin` / `umami`. It is documented in
+[`README.md`](./README.md) so anyone can drive the demo. `APP_SECRET` and the
+database credentials remain secret and live only in Railway variables.
+
+To retrieve the current demo login from Railway:
 
 ```bash
 railway variable list --service umami --json | jq -r '{username: .DEMO_USERNAME, password: .DEMO_PASSWORD}'
 ```
-
-Do not copy those values into this repository, issues, PRs, or logs.
 
 ## Local development
 

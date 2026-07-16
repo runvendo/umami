@@ -17,6 +17,21 @@
 
 ---
 
+## Try the Vendo demo
+
+This is the Vendo MCP fork of Umami. The live demo runs at
+**https://umami-production-2721.up.railway.app**. Sign in with the public demo
+credentials:
+
+- **Username:** `admin`
+- **Password:** `umami`
+
+These are intentionally public, non-secret credentials for a demo analytics
+site seeded with two synthetic websites (Demo Blog and Demo SaaS). See
+[`RUNBOOK.md`](./RUNBOOK.md) for the Vendo MCP integration details.
+
+---
+
 ## 🚀 Getting Started
 
 A detailed getting started guide can be found at [umami.is/docs](https://umami.is/docs/).
